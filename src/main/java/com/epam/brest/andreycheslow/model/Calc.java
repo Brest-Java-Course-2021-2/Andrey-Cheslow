@@ -22,6 +22,7 @@ public class Calc implements Status {
             System.out.println("Result: " + new CalcImpl().handle(userData.get(0),dataFromFile.get(0),userData.get(1),dataFromFile.get(1)));
         } finally {
             userData.clear();
+            dataFromFile.clear();
         }
 
         return new ReadData(scanner);

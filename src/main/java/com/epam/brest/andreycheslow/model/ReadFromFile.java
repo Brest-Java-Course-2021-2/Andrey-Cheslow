@@ -1,9 +1,13 @@
 package com.epam.brest.andreycheslow.model;
 
+import com.epam.brest.andreycheslow.file.CSVFileReader;
+import com.epam.brest.andreycheslow.selector.StandardPriceSelector;
+
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.Map;
 import java.util.Scanner;
 
 public class ReadFromFile implements Status {
@@ -16,16 +20,14 @@ public class ReadFromFile implements Status {
 
     @Override
     public Status handle() {
-        try {
-            FileReader fr = new FileReader("file.txt");
-            Scanner scan = new Scanner(fr);
-            String temp;
-            while (scan.hasNextLine()) {
-                temp = scan.nextLine();
-                dataFromFile.add(BigDecimal.valueOf(Double.parseDouble(temp)));
-            }
 
-            fr.close();
+
+        try {
+            Map<Integer,BigDecimal> pricePerKg = new CSVFileReader().readData("pricePerKg.csv");
+            Map<Integer,BigDecimal> pricePerKm = new CSVFileReader().readData("pricePerKm.csv");
+            StandardPriceSelector selector = new StandardPriceSelector();
+            dataFromFile.add(selector.selectPriceValue(pricePerKg,userData.get(0)));
+            dataFromFile.add(selector.selectPriceValue(pricePerKm,userData.get(1)));
         } catch(IOException e){
             System.out.println(e.getMessage());
         }
